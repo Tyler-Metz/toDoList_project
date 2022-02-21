@@ -2,14 +2,35 @@ import * as React from 'react';
 
 const setTasks = (props) => {
     let [tasks, clearTasks] = React.useState([]);
-
-    if (props.state != "" && typeof props.state == 'string') tasks.push(props.state);
+    let [checkBoxMatch, saveCheckBox] = React.useState({});
+    if (tasks.includes(props.state)){
+        console.log("Submitting the same thing! Not submitting.")
+    }
+    else if(props.state != "" && typeof props.state == 'string' ) tasks.push(props.state);
 
     const onClickClearTasks = () => {
         clearTasks([]);
         props.setState([]);
     }
     
+    const onClickSetToggle = (e) => {
+        let prntEle = e.target.parentElement
+        console.log("element parent: ", prntEle)
+        let prntEleTxtCnt = prntEle.textContent;
+        console.log("textContent", prntEleTxtCnt)
+
+        if (e.target.checked == true){
+            checkBoxMatch[prntEleTxtCnt] = true
+            saveCheckBox(checkBoxMatch);
+        }
+        else if (e.target.checked == false){
+            checkBoxMatch[prntEleTxtCnt] = false
+            saveCheckBox(checkBoxMatch);
+        }   
+
+        console.log("checking checkbox data: ", checkBoxMatch);
+    }
+
     const onClickDeleteTask = (e) => {
         let parentLiToDelete = e.target.parentElement.textContent
         
@@ -40,8 +61,8 @@ const setTasks = (props) => {
                         e.target.previousSibling.checked = false;
                         break;
                 }
-            }
-        }
+            } 
+        } 
         
         props.setState(newTasks);
         clearTasks(newTasks);
@@ -52,7 +73,7 @@ const setTasks = (props) => {
             <ul id='add-item'>
                 {tasks.map((val, ind) => {
                     return <li>{val}
-                        <input className='checkboxes' type='checkbox'/>
+                        <input className='checkboxes' type='checkbox' onClick={onClickSetToggle}/>
                         <input type='button' className='delete' value='Delete' onClick={onClickDeleteTask}/>
                     </li>
                 })}

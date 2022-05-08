@@ -17,10 +17,8 @@ export default function setTasks ({chores, setChores}) {
     }
 
     const onClickDeleteTask = val => {
-        if(val.choreChecked === true){
             const filteredChores = chores.filter(x => x.choreId !== val.choreId);
             setChores([...filteredChores]);    
-        }  
     }
 
     return (

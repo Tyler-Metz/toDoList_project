@@ -18,5 +18,6 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.jsx', '.js']
     },
-    watch: true
+    watch: true,
+    mode: "development"
 }

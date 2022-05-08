@@ -1,25 +1,35 @@
 import * as React from 'react';
 
-function CustomChore(props){
-    const [chore, setChore] = React.useState("Hi")
-    
-    function getChore(e){
-        setChore(e.target.value);
+export default function CustomChore({chores, setChores}) {
+
+    const getDateString = () => {
+        return Math.floor(Math.random() * 100000).toString();
     }
 
-    function submitChore(e) {
-        e.preventDefault()
-        props.setState(chore)
-        e.target.reset();
-        setChore("");
+    const obj = { 
+        choreId: getDateString(),
+        choreValue: '',
+        choreChecked: false
+    }
+
+    const [chore, setChore] = React.useState(obj);
+    
+    function getChore(e){
+        setChore({
+            ...chore,
+            choreValue: e.target.value
+        });
+    }
+
+    const submitChore = () => {  
+            setChores([...chores, chore]);
+            setChore(obj);   
     }
 
     return (
-            <form id='get-header' onSubmit={submitChore}> 
-                <input onChange={getChore}></input>
-                <input type='submit'></input>
-            </form>
+            <div id="get-header"> 
+                <input value={chore.choreValue} onChange={getChore}></input>
+                <button type='button' onClick={submitChore}>Submit</button>
+            </div>
     )
 }
-
-export default CustomChore;

@@ -4,12 +4,13 @@ import GetTasks from './getTasks';
 import SetTasks from './setTasks';
 
 function App() {
-    const [state, setState] = React.useState([]);
-    console.log('Current State in App:', state);
+
+    const [chores, setChores] = React.useState([]);
+
     return (
         <div id='container'>
-            <GetTasks setState={setState} />
-            <SetTasks setState={setState} state={state} />
+            <GetTasks chores={chores} setChores={setChores} />
+            <SetTasks chores={chores} setChores={setChores} />
         </div>
     )
 }

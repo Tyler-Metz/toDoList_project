@@ -3,7 +3,7 @@ import * as React from 'react';
 function CustomChore(props){
     const [chore, setChore] = React.useState("Hi")
     
-    function getChore(e){
+    function getChore(e){ 
         setChore(e.target.value);
     }
 

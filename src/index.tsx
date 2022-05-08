@@ -5,11 +5,12 @@ import SetTasks from './setTasks';
 
 function App() {
     const [state, setState] = React.useState([]);
-    console.log('Current State in App:', state);
+    const [checked, setChecked] = React.useState(false);
+    console.log('Current State in App: ' , state);
     return (
         <div id='container'>
             <GetTasks setState={setState} />
-            <SetTasks setState={setState} state={state} />
+            <SetTasks setState={setState} checked={checked} setChecked={setChecked} state={state} />
         </div>
     )
 }

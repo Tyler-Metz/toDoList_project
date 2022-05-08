@@ -4,6 +4,7 @@
         "target": "ES5",
         "module": "commonjs",
         "jsx": "react",
-        "watch": true
+        "watch": true,
+        "sourceMap": true
     }
 }

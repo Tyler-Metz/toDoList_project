@@ -13,30 +13,41 @@ const setTasks = (props) => {
         props.setState([]);
     }
     
+    // Make new object because react is stupid and if it's the same object, it won't rerender. Reference memory
+    // has to be different.
     const onClickSetToggle = (e) => {
         let prntEle = e.target.parentElement
         console.log("element parent: ", prntEle)
         let prntEleTxtCnt = prntEle.textContent;
         console.log("textContent", prntEleTxtCnt)
 
+        let newCheckBoxMatch = checkBoxMatch;
         if (e.target.checked == true){
-            checkBoxMatch[prntEleTxtCnt] = true
-            saveCheckBox(checkBoxMatch);
+            newCheckBoxMatch[prntEleTxtCnt] = true
+            saveCheckBox(newCheckBoxMatch);
         }
-        else if (e.target.checked == false){
-            checkBoxMatch[prntEleTxtCnt] = false
-            saveCheckBox(checkBoxMatch);
+        if (e.target.checked == false){
+            newCheckBoxMatch[prntEleTxtCnt] = false
+            saveCheckBox(newCheckBoxMatch);
         }   
 
-        console.log("checking checkbox data: ", checkBoxMatch);
+        console.log("checking checkbox data: ", newCheckBoxMatch); 
+        
     }
 
     const onClickDeleteTask = (e) => {
-        let parentLiToDelete = e.target.parentElement.textContent
-        
+        let parentLiToDelete = e.target.parentElement
+        let newCheckBoxMatch = checkBoxMatch
+
+        let checkBoxValToDelete = tasks.find(val => {
+            console.log("Value: ", val, "looking for parent: ", parentLiToDelete)
+            return val == parentLiToDelete.textContent
+        })
+        delete newCheckBoxMatch[checkBoxValToDelete];
+
         let parentIndToDelete = tasks.findIndex(val => {
             console.log("Value: ", val, "looking for parent: ", parentLiToDelete)
-            return val == parentLiToDelete
+            return val == parentLiToDelete.textContent
         })
       
         // Object/Array has to be different, react only uses reference (Object ID)
@@ -44,40 +55,50 @@ const setTasks = (props) => {
             return ind != parentIndToDelete;
         })
 
-        console.log("Is checkbox checked? ", e.target.previousSibling.checked)
-        let parentLi = e.target.parentElement
-        let nextLi = parentLi.nextSibling
-        if (nextLi) {
-            let doesNextLiHaveChildren = nextLi.hasChildNodes()
-
-            if (doesNextLiHaveChildren) {
-                switch (nextLi.children[0].checked) {
-                    case true:
-                        console.log("Is next child checked? (true block)", nextLi.children[0].checked)
-                        e.target.previousSibling.checked = true;
-                        break;
-                    case false:
-                        console.log("Is next child checked? (false block)", nextLi.children[0].checked)
-                        e.target.previousSibling.checked = false;
-                        break;
+        for (let i = 0; i < newTasks.length; i++) {
+            for (let j = 0; j < Object.keys(newCheckBoxMatch).length; j++) {
+                if (Object.keys(newCheckBoxMatch)[j] == newTasks[i] && newCheckBoxMatch[newTasks[i]] == true) {
+                    newCheckBoxMatch[newTasks[i]] = true;
                 }
-            } 
+            }
+
         } 
-        
-        props.setState(newTasks);
+
+        saveCheckBox(newCheckBoxMatch);
+
+        // Make new copy of array to state
         clearTasks(newTasks);
+        props.setState(newTasks);
+    }
+
+    // Make checked state carry over to copy of array just made and save it to checkBoxMatch
+    const setCheckBoxData = (val) => {
+
+        if (Object.keys(checkBoxMatch).length = 0) {
+            return true;
+        }
+
+        else if (Object.keys(checkBoxMatch).includes(val) && checkBoxMatch[val] == true) {
+            return true;
+        }
+
+        else if (Object.keys(checkBoxMatch).includes(val) && checkBoxMatch[val] == false) {
+            return false;
+        }
+
     }
 
     return (
         <div id='get-body'>
-            <ul id='add-item'>
+            
                 {tasks.map((val, ind) => {
-                    return <li>{val}
-                        <input className='checkboxes' type='checkbox' onClick={onClickSetToggle}/>
-                        <input type='button' className='delete' value='Delete' onClick={onClickDeleteTask}/>
-                    </li>
+                    return <li key={val}>
+                            {val}
+                            <input checked={false} className='checkboxes' type='checkbox' onChange={props.setChecked = e => e.target.checked}/>
+                            <input type='button' className='delete' value='Delete' onClick={onClickDeleteTask}/>
+                        </li>
                 })}
-            </ul>
+            
             <input id='clear' type='button' value="Clear" onClick={onClickClearTasks}></input>
         </div>
     )

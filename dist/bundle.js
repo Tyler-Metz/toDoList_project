@@ -29823,15 +29823,18 @@ if (false) {} else {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 function CustomChore(props) {
-    var _a = React.useState("Hi"), chore = _a[0], setChore = _a[1];
+    var _a = React.useState(["", null]), chore = _a[0], setChore = _a[1];
     function getChore(e) {
         setChore(e.target.value);
     }
+    function generateKey() {
+        return Math.floor(Math.random() * 1000000);
+    }
     function submitChore(e) {
         e.preventDefault();
-        props.setState(chore);
+        props.setState([chore, generateKey()]);
         e.target.reset();
-        setChore("");
+        setChore(["", null]);
     }
     return (React.createElement("form", { id: 'get-header', onSubmit: submitChore },
         React.createElement("input", { onChange: getChore }),
@@ -29857,7 +29860,7 @@ var setTasks = function (props) {
     if (tasks.includes(props.state)) {
         console.log("Submitting the same thing! Not submitting.");
     }
-    else if (props.state != "" && typeof props.state == 'string')
+    else if (props.state[0] != "" && typeof props.state[0] == 'string')
         tasks.push(props.state);
     var onClickClearTasks = function () {
         clearTasks([]);
@@ -29878,43 +29881,46 @@ var setTasks = function (props) {
         }
         console.log("checking checkbox data: ", checkBoxMatch);
     };
-    var onClickDeleteTask = function (e) {
-        var parentLiToDelete = e.target.parentElement.textContent;
+    var onClickDeleteTask = function (key) {
+        // let parentLiToDelete = e.target.parentElement.textContent
         var parentIndToDelete = tasks.findIndex(function (val) {
-            console.log("Value: ", val, "looking for parent: ", parentLiToDelete);
-            return val == parentLiToDelete;
+            // console.log("Value: ", val[0], "looking for parent: ", parentLiToDelete)
+            return val[1] == key;
         });
         // Object/Array has to be different, react only uses reference (Object ID)
         var newTasks = tasks.filter(function (val, ind) {
             return ind != parentIndToDelete;
         });
-        console.log("Is checkbox checked? ", e.target.previousSibling.checked);
-        var parentLi = e.target.parentElement;
-        var nextLi = parentLi.nextSibling;
-        if (nextLi) {
-            var doesNextLiHaveChildren = nextLi.hasChildNodes();
-            if (doesNextLiHaveChildren) {
-                switch (nextLi.children[0].checked) {
-                    case true:
-                        console.log("Is next child checked? (true block)", nextLi.children[0].checked);
-                        e.target.previousSibling.checked = true;
-                        break;
-                    case false:
-                        console.log("Is next child checked? (false block)", nextLi.children[0].checked);
-                        e.target.previousSibling.checked = false;
-                        break;
-                }
-            }
-        }
         props.setState(newTasks);
+        clearTasks(newTasks);
+        // console.log("Is checkbox checked? ", e.target.previousSibling.checked)
+        // let parentLi = e.target.parentElement
+        // let nextLi = parentLi.nextSibling
+        // if (nextLi) {
+        //     let doesNextLiHaveChildren = nextLi.hasChildNodes()
+        //     if (doesNextLiHaveChildren) {
+        //         switch (nextLi.children[0].checked) {
+        //             case true:
+        //                 console.log("Is next child checked? (true block)", nextLi.children[0].checked)
+        //                 e.target.previousSibling.checked = true;
+        //                 break;
+        //             case false:
+        //                 console.log("Is next child checked? (false block)", nextLi.children[0].checked)
+        //                 e.target.previousSibling.checked = false;
+        //                 break;
+        //         }
+        //     } 
+        // } 
+        // props.setState(newTasks);
         // clearTasks(newTasks);
     };
     return (React.createElement("div", { id: 'get-body' },
         React.createElement("ul", { id: 'add-item' }, tasks.map(function (val, ind) {
-            return React.createElement("li", null,
-                val,
+            return React.createElement("li", { key: val[1] },
+                " ",
+                val[0],
                 React.createElement("input", { className: 'checkboxes', type: 'checkbox', onClick: onClickSetToggle }),
-                React.createElement("input", { type: 'button', className: 'delete', value: 'Delete', onClick: onClickDeleteTask }));
+                React.createElement("input", { type: 'button', className: 'delete', value: 'Delete', onClick: function () { return onClickDeleteTask(val[1]); } }));
         })),
         React.createElement("input", { id: 'clear', type: 'button', value: "Clear", onClick: onClickClearTasks })));
 };

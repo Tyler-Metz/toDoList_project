@@ -1,17 +1,21 @@
 import * as React from 'react';
 
 function CustomChore(props){
-    const [chore, setChore] = React.useState("Hi")
+    const [chore, setChore] = React.useState(["", null])
     
     function getChore(e){
         setChore(e.target.value);
     }
 
+    function generateKey() {
+        return Math.floor(Math.random() * 1000000);
+    }
+
     function submitChore(e) {
         e.preventDefault()
-        props.setState(chore)
+        props.setState([chore, generateKey()])
         e.target.reset();
-        setChore("");
+        setChore(["", null]);
     }
 
     return (

@@ -65,7 +65,7 @@ const setTasks = (props) => {
         } 
         
         props.setState(newTasks);
-        clearTasks(newTasks);
+        // clearTasks(newTasks);
     }
 
     return (

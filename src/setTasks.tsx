@@ -1,12 +1,16 @@
 import * as React from 'react';
+import gsap from 'gsap';
 
 const setTasks = (props) => {
     let [tasks, clearTasks] = React.useState([]);
-    let [checkBoxMatch, saveCheckBox] = React.useState({});
-    if (tasks.includes(props.state)){
-        console.log("Submitting the same thing! Not submitting.")
+
+    //// This will prevent customers entering a blank entry (if statement doesn't work at the moment)
+    if(props.state[0] != "" && typeof props.state[0] == 'string' ) {
+        tasks.push(props.state);
     }
-    else if(props.state[0] != "" && typeof props.state[0] == 'string' ) tasks.push(props.state);
+    else {
+        console.log("Re-rendering...")
+    }
 
     const onClickClearTasks = () => {
         clearTasks([]);
@@ -14,70 +18,47 @@ const setTasks = (props) => {
     }
     
     const onClickSetToggle = (e) => {
-        let prntEle = e.target.parentElement
-        console.log("element parent: ", prntEle)
-        let prntEleTxtCnt = prntEle.textContent;
-        console.log("textContent", prntEleTxtCnt)
-
-        if (e.target.checked == true){
-            checkBoxMatch[prntEleTxtCnt] = true
-            saveCheckBox(checkBoxMatch);
-        }
-        else if (e.target.checked == false){
-            checkBoxMatch[prntEleTxtCnt] = false
-            saveCheckBox(checkBoxMatch);
-        }   
-
-        console.log("checking checkbox data: ", checkBoxMatch);
+        e.target.checked != e.target.checked;
     }
 
     const onClickDeleteTask = (key) => {
-        // let parentLiToDelete = e.target.parentElement.textContent
         
         let parentIndToDelete = tasks.findIndex(val => {
-            // console.log("Value: ", val[0], "looking for parent: ", parentLiToDelete)
             return val[1] == key
         })
-      
+
         // Object/Array has to be different, react only uses reference (Object ID)
         let newTasks = tasks.filter((val, ind) => {
             return ind != parentIndToDelete;
         })
 
+        // State from getTasks getting passed down from App as props (not using context)
         props.setState(newTasks);
+
+        // State for deleting task one at a time or by clearing all of them
         clearTasks(newTasks);
 
-        // console.log("Is checkbox checked? ", e.target.previousSibling.checked)
-        // let parentLi = e.target.parentElement
-        // let nextLi = parentLi.nextSibling
-        // if (nextLi) {
-        //     let doesNextLiHaveChildren = nextLi.hasChildNodes()
+    }
 
-        //     if (doesNextLiHaveChildren) {
-        //         switch (nextLi.children[0].checked) {
-        //             case true:
-        //                 console.log("Is next child checked? (true block)", nextLi.children[0].checked)
-        //                 e.target.previousSibling.checked = true;
-        //                 break;
-        //             case false:
-        //                 console.log("Is next child checked? (false block)", nextLi.children[0].checked)
-        //                 e.target.previousSibling.checked = false;
-        //                 break;
-        //         }
-        //     } 
-        // } 
-        
-        // props.setState(newTasks);
-        // clearTasks(newTasks);
+    // e is default "react event"
+    // to get dom object, use e.target
+    // then use vanilla javascript from here
+    const removeHandler = (key, e) => {
+        gsap.to(e.target.parentElement, {
+            x: 100,
+            opacity: 0,
+            duration: 1,
+            onComplete: () => onClickDeleteTask(key)
+          });
     }
 
     return (
         <div id='get-body'>
             <ul id='add-item'>
                 {tasks.map((val, ind) => {
-                    return <li key={val[1]}> {val[0]}
+                    return <li className='listItems' ref={props.listRef} key={val[1]}> {val[0]}
                         <input className='checkboxes' type='checkbox' onClick={onClickSetToggle}/>
-                        <input type='button' className='delete' value='Delete' onClick={() => onClickDeleteTask(val[1])}/>
+                        <input type='button' className='delete' value='Delete' onClick={(e) => removeHandler(val[1], e)}/>
                     </li>
                 })}
             </ul>

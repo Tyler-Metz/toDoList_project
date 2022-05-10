@@ -12,15 +12,14 @@ function CustomChore(props){
     }
 
     function submitChore(e) {
-        e.preventDefault()
-        props.setState([chore, generateKey()])
+        e.preventDefault();
+        props.setState([chore, generateKey()]);
         e.target.reset();
-        setChore(["", null]);
     }
 
     return (
             <form id='get-header' onSubmit={submitChore}> 
-                <input onChange={getChore}></input>
+                <input type="text" placeholder="Enter chore here" onChange={getChore} required></input>
                 <input type='submit'></input>
             </form>
     )

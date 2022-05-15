@@ -35540,7 +35540,8 @@ var setTasks = function (props) {
         gsap_1.default.to(e.target.parentElement, {
             x: 100,
             opacity: 0,
-            duration: 1,
+            duration: 0.5,
+            rotation: "+=360",
             onComplete: function () { return onClickDeleteTask(key); }
         });
     };

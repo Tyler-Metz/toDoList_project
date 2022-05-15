@@ -47,7 +47,8 @@ const setTasks = (props) => {
         gsap.to(e.target.parentElement, {
             x: 100,
             opacity: 0,
-            duration: 1,
+            duration: 0.5,
+            rotation: "+=360",
             onComplete: () => onClickDeleteTask(key)
           });
     }

@@ -18,10 +18,14 @@ function CustomChore(props){
     }
 
     return (
-            <form id='get-header' onSubmit={submitChore}> 
-                <input type="text" placeholder="Enter chore here" onChange={getChore} required></input>
-                <input type='submit'></input>
-            </form>
+        <div id='get-header-wrapper' >
+            <div id='get-header'> 
+                <form id='get-item-wrapper' onSubmit={submitChore}>
+                    <input id='input' type="text" placeholder="Enter chore here" onChange={getChore} required></input>
+                    <button id='submit' type='submit'>Submit</button>
+                </form>
+            </div>
+        </div>
     )
 }
 

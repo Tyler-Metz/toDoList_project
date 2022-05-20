@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import gsap from 'gsap';
+import './css_files/main';
 import GetTasks from './getTasks';
 import SetTasks from './setTasks';
 

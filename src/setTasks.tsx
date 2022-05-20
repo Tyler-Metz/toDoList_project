@@ -54,7 +54,9 @@ const setTasks = (props) => {
     }
 
     return (
-        <div id='get-body'>
+        <div id='get-body-wrapper'>
+            <div id='get-body'>
+            <div id='add-item-wrapper'>
             <ul id='add-item'>
                 {tasks.map((val, ind) => {
                     return <li className='listItems' ref={props.listRef} key={val[1]}> {val[0]}
@@ -63,7 +65,9 @@ const setTasks = (props) => {
                     </li>
                 })}
             </ul>
-            <input id='clear' type='button' value="Clear" onClick={onClickClearTasks}></input>
+            <button id='clear' onClick={onClickClearTasks}>Clear</button>
+            </div>
+            </div>
         </div>
     )
 }

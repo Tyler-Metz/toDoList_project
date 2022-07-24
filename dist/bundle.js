@@ -35995,9 +35995,14 @@ module.exports = styleTagTransform;
 /*!**************************!*\
   !*** ./src/getTasks.tsx ***!
   \**************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 function CustomChore(props) {
@@ -36010,7 +36015,9 @@ function CustomChore(props) {
     }
     function submitChore(e) {
         e.preventDefault();
-        props.setState([chore, generateKey()]);
+        console.log('Chores in getTasks (before): ', props.chores);
+        props.setChores(__spreadArray(__spreadArray([], props.chores), [{ chore: chore, key: generateKey() }]));
+        console.log('Chores in getTasks (after): ', props.chores);
         e.target.reset();
     }
     return (React.createElement("div", { id: 'get-header-wrapper' },
@@ -36033,57 +36040,56 @@ exports.default = CustomChore;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-var gsap_1 = __webpack_require__(/*! gsap */ "./node_modules/gsap/index.js");
 var setTasks = function (props) {
-    var _a = React.useState([]), tasks = _a[0], clearTasks = _a[1];
+    // let [tasks, clearTasks] = React.useState([]);
     //// This will prevent customers entering a blank entry (if statement doesn't work at the moment)
-    if (props.state[0] != "" && typeof props.state[0] == 'string') {
-        tasks.push(props.state);
-    }
-    else {
-        console.log("Re-rendering...");
-    }
+    // if(props.state[0] != "" && typeof props.state[0] == 'string' ) {
+    //     tasks.push(props.state);
+    // }
+    // else {
+    //     console.log("Re-rendering...")
+    // }
     var onClickClearTasks = function () {
-        clearTasks([]);
-        props.setState([]);
+        // clearTasks([]);
+        // props.setState([]);
+        props.setChores({});
     };
     var onClickSetToggle = function (e) {
         e.target.checked != e.target.checked;
     };
-    var onClickDeleteTask = function (key) {
-        var parentIndToDelete = tasks.findIndex(function (val) {
-            return val[1] == key;
-        });
-        // Object/Array has to be different, react only uses reference (Object ID)
-        var newTasks = tasks.filter(function (val, ind) {
-            return ind != parentIndToDelete;
-        });
-        // State from getTasks getting passed down from App as props (not using context)
-        props.setState(newTasks);
-        // State for deleting task one at a time or by clearing all of them
-        clearTasks(newTasks);
-    };
+    // const onClickDeleteTask = (key) => {
+    //     let parentIndToDelete = props.chores.findIndex(val => {
+    //         return val.key == key
+    //     })
+    //     // Object/Array has to be different, react only uses reference (Object ID)
+    //     let newTasks = props.chores.filter((val, ind) => {
+    //         return ind != parentIndToDelete;
+    //     })
+    //     // State from getTasks getting passed down from App as props (not using context)
+    //     props.setChores(newTasks);
+    //     // State for deleting task one at a time or by clearing all of them
+    //     // clearTasks(newTasks);
+    // }
     // e is default "react event"
     // to get dom object, use e.target
-    // then use vanilla javascript from here
-    var removeHandler = function (key, e) {
-        gsap_1.default.to(e.target.parentElement, {
-            x: 100,
-            opacity: 0,
-            duration: 0.5,
-            rotation: "+=360",
-            onComplete: function () { return onClickDeleteTask(key); }
-        });
-    };
+    // then use vanilla javascript from there
+    // const removeHandler = (key, e) => {
+    //     gsap.to(e.target.parentElement, {
+    //         x: 100,
+    //         opacity: 0,
+    //         duration: 0.5,
+    //         rotation: "+=360",
+    //       });
+    // }
     return (React.createElement("div", { id: 'get-body-wrapper' },
         React.createElement("div", { id: 'get-body' },
             React.createElement("div", { id: 'add-item-wrapper' },
-                React.createElement("ul", { id: 'add-item' }, tasks.map(function (val, ind) {
-                    return React.createElement("li", { className: 'listItems', ref: props.listRef, key: val[1] },
+                React.createElement("ul", { id: 'add-item' }, Object.keys(props.chores).map(function (val, ind) {
+                    return React.createElement("li", { className: 'listItems', ref: props.listRef, key: props.chores[val].key },
                         " ",
-                        val[0],
+                        props.chores[val].chore,
                         React.createElement("input", { className: 'checkboxes', type: 'checkbox', onClick: onClickSetToggle }),
-                        React.createElement("input", { type: 'button', className: 'delete', value: 'Delete', onClick: function (e) { return removeHandler(val[1], e); } }));
+                        React.createElement("input", { type: 'button', className: 'delete', value: 'Delete', onClick: function (e) { return props.runRemoveHandler(props.chores[val].key, e); } }));
                 })),
                 React.createElement("button", { id: 'clear', onClick: onClickClearTasks }, "Clear")))));
 };
@@ -36112,7 +36118,7 @@ exports.default = setTasks;
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -36177,8 +36183,8 @@ var getTasks_1 = __webpack_require__(/*! ./getTasks */ "./src/getTasks.tsx");
 var setTasks_1 = __webpack_require__(/*! ./setTasks */ "./src/setTasks.tsx");
 var prevRef;
 function App() {
-    var _a = React.useState([]), state = _a[0], setState = _a[1];
-    console.log('Current State in App:', state);
+    var _a = React.useState([]), chores = _a[0], setChores = _a[1];
+    console.log('Current chores in index.tsx:', chores);
     //// GSAP
     // Adding .listItems animation tween
     var listRef = React.useRef();
@@ -36193,9 +36199,21 @@ function App() {
         }
         prevRef = listRef.current;
     });
+    function removeHandler(newKey, e) {
+        gsap_1.default.to(e.target.parentElement, {
+            x: 100,
+            opacity: 0,
+            duration: 0.5,
+            rotation: "+=360",
+            onComplete: function () { return deleteChore(newKey); }
+        });
+    }
+    function deleteChore(newKey) {
+        setChores(function (prevState) { return prevState.filter(function (val) { return val.key !== newKey; }); });
+    }
     return (React.createElement("div", { id: 'container' },
-        React.createElement(getTasks_1.default, { setState: setState }),
-        React.createElement(setTasks_1.default, { setState: setState, state: state, listRef: listRef })));
+        React.createElement(getTasks_1.default, { setChores: setChores, chores: chores }),
+        React.createElement(setTasks_1.default, { setChores: setChores, chores: chores, listRef: listRef, runRemoveHandler: removeHandler })));
 }
 ReactDOM.render(React.createElement(App, null), document.querySelector('#app'));
 

@@ -8,8 +8,9 @@ import SetTasks from './setTasks';
 let prevRef;
 
 function App() {
-    const [state, setState] = React.useState([]);
-    console.log('Current State in App:', state);
+    const [chores, setChores] = React.useState([]);
+
+    console.log('Current chores in index.tsx:', chores);
 
     //// GSAP
 
@@ -28,10 +29,33 @@ function App() {
         prevRef = listRef.current;
     });
 
+    function removeHandler(newKey, e) {
+        gsap.to(e.target.parentElement, {
+            x: 100,
+            opacity: 0,
+            duration: 0.5,
+            rotation: "+=360",
+            onComplete: () => deleteChore(newKey)
+          });
+    }
+
+    function deleteChore(newKey) {
+        setChores(prevState => prevState.filter(val => val.key !== newKey))
+    }
+
     return (
         <div id='container'>
-            <GetTasks setState={setState}/>
-            <SetTasks setState={setState} state={state} listRef={listRef}/>
+            <GetTasks 
+                setChores={setChores} 
+                chores={chores}
+            />
+
+            <SetTasks 
+                setChores={setChores}
+                chores={chores} 
+                listRef={listRef}
+                runRemoveHandler={removeHandler}
+            />
         </div>
     )
 }

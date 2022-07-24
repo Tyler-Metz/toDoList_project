@@ -13,7 +13,15 @@ function CustomChore(props){
 
     function submitChore(e) {
         e.preventDefault();
-        props.setState([chore, generateKey()]);
+
+        console.log('Chores in getTasks (before): ', props.chores);
+
+        props.setChores(
+            [...props.chores, {chore: chore, key: generateKey()}]
+        );
+
+        console.log('Chores in getTasks (after): ', props.chores);
+
         e.target.reset();
     }
 
